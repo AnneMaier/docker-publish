@@ -1,6 +1,6 @@
 var express = require('express');
 var mysql = require('mysql');
-const env = require('dotenv').config({ path: "../../.env" });   
+const env = require('dotenv').config({ path: '../.env'  });   
 var app = express();
 
 var connection = mysql.createConnection({
