@@ -1,74 +1,56 @@
 var express = require('express');
 var mysql = require('mysql');
-const env = require('dotenv').config({ path: '../.env'  });   
+const env = require('dotenv').config({ path: '../../.env' });
 var app = express();
 
 var connection = mysql.createConnection({
-    host: process.env.MYSQL_HOST,
-    port: process.env.MYSQL_PORT,
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DB
+    host: process.env.host,
+    user: process.env.user,
+    port: process.env.port,
+    password: process.env.password,
+    database: process.env.database,
 });
 
 connection.connect(function (err) {
-    if (err){
-        console.error("DB is not connected! Error: " + err + "\n\n");
-    }else{
-        console.log("DB is connected!\n\n");
+    if (!err) {
+        console.log('Database is connected~!!\n\n');
+    } else {
+        console.log('Error connecting Database~!!');
     }
 });
 
-
-
-// var main = require('./routes/main');
-// app.use('/', main);
-
-
 app.get('/', function (req, res) {
-  connection.query('select * from st_info', function (err, rows, fields) {
-
-    if (err) {
-      console.error("쿼리 실행 오류:", err);
-      res.writeHead(500);
-      res.end('데이터베이스 오류 발생');
-      return;
-    }
-
-    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-    var template = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="utf-8">
-        <title>Result</title>
-      </head>
-      <body>
-      <table border="1" style="margin:auto; text-align:center;">
-        <tr>
-          <th>ST_ID</th>
-          <th>NAME</th>
-          <th>DEPT</th>
-        </tr>
-    `;
-    for (var i = 0; i < rows.length; i++) {
-      template += `
-        <tr>
-          <td>${rows[i].ST_ID}</td>
-          <td>${rows[i].NAME}</td>
-          <td>${rows[i].DEPT}</td>
-        </tr>
-      `;
-    }
-    template += `
-      </table>
-      </body>
-      </html>
-    `;
-    res.end(template);
-  });
+    connection.query('select * from st_info', function (err, rows, fields) {
+        // connection.end();
+        if (!err) {
+            // res.send(rows);
+            res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+            var template = `
+                <table border="1" style="margin:auto;text-align:center;">
+                <tr>
+                    <th>ST_ID</th>
+                    <th>NAME</th>
+                    <th>DEPT</th>
+                </tr>
+                `;
+            rows.forEach(item => {
+                template += `
+                    <tr>
+                        <th>${item.ST_ID}</th>
+                        <th>${item.NAME}</th>
+                        <th>${item.DEPT}</th>
+                    </tr>
+                    `;
+            });
+            template += `</table>`;
+            res.end(template);
+            console.log('The solution is : ', rows);
+        } else {
+            console.log('Error while performing Query~!!');
+        }
+    });
 });
 
 app.listen(8080, function () {
-    console.log("Express server listening on port 8080 \n\n");
-})
+    console.log('8080 Port : Server Started~!!');
+});
