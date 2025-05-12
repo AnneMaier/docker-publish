@@ -1,6 +1,6 @@
 var express = require('express');
 var mysql = require('mysql');
-const env = require('dotenv').config({ path: '../../.env' });
+const env = require("dotenv").config({ path: "./.env" });
 var app = express();
 
 var connection = mysql.createConnection({
@@ -53,4 +53,4 @@ app.get('/', function (req, res) {
 
 app.listen(8080, function () {
     console.log('8080 Port : Server Started~!!');
-});
+});s
